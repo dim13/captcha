@@ -1,5 +1,6 @@
 // reCAPTCHA Go API
-
+//
+// https://developers.google.com/recaptcha/intro
 package captcha
 
 import (
