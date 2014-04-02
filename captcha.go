@@ -1,3 +1,5 @@
+// reCAPTCHA Go API
+
 package captcha
 
 import (
@@ -12,14 +14,6 @@ type Captcha struct {
 	Public  string
 	Server  string
 	answer  []string
-}
-
-var errorcodes = map[string]string{
-	"invalid-site-private-key": "We weren't able to verify the private key.",
-	"invalid-request-cookie":   "The challenge parameter of the verify script was incorrect.",
-	"incorrect-captcha-sol":    "The CAPTCHA solution was incorrect.",
-	"captcha-timeout":          "The solution was received after the CAPTCHA timed out.",
-	"recaptcha-not-reachable":  "reCAPTCHA never returns this error code.",
 }
 
 const apiServer = "https://www.google.com/recaptcha/api"
@@ -48,6 +42,13 @@ func (c *Captcha) Verify(remoteip, challenge, response string) (bool, error) {
 	return c.answer[0] == "true", c
 }
 
+// Error codes:
+// invalid-site-private-key: We weren't able to verify the private key.
+// invalid-request-cookie:   The challenge parameter of the verify script was incorrect.
+// incorrect-captcha-sol:    The CAPTCHA solution was incorrect.
+// captcha-timeout:          The solution was received after the CAPTCHA timed out.
+// recaptcha-not-reachable:  reCAPTCHA never returns this error code.
+
 func (c *Captcha) Error() string {
-	return errorcodes[c.answer[1]]
+	return c.answer[1]
 }
