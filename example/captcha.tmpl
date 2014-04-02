@@ -9,7 +9,8 @@
 	</head>
 	<body>
 		<h1>{{.Title}}</h1>
-		<p>
+		{{with .Ok}}<div id="ok">Ok: {{.}}</div>{{end}}
+		{{with .Error}}<div id="error">Error: {{.}}</div>{{end}}
 		<form action="/" method="POST">
 		<script type="text/javascript"
 			src="{{.Server}}/challenge?k={{.Public}}">
@@ -26,12 +27,5 @@
 		</noscript>
 		<input type="submit">
 		</form>
-		</p>
-		{{with .Ok}}
-		<p id="ok">Ok: {{.}}</p>
-		{{end}}
-		{{with .Error}}
-		<p id="error">Error: {{.}}</p>
-		{{end}}
 	</body>
 </html>
