@@ -11,6 +11,7 @@ import (
 var (
 	private = flag.String("private", "", "private key")
 	public  = flag.String("public", "", "public key")
+	listen = flag.String("listen", ":8000", "listen on")
 )
 
 type Page struct {
@@ -46,7 +47,12 @@ func root(w http.ResponseWriter, r *http.Request) {
 
 func main() {
 	flag.Parse()
+	if *private == "" || *public == "" {
+		flag.PrintDefaults()
+		return
+	}
 	cc = captcha.New(*private, *public)
 	http.HandleFunc("/", root)
-	log.Fatal(http.ListenAndServe(":8000", nil))
+	log.Println("Listen on", *listen)
+	log.Fatal(http.ListenAndServe(*listen, nil))
 }
