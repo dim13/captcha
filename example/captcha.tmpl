@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>{{.Title}}</title>
+		<style>
+			#ok { color: green; }
+			#error { color: red; }
+		</style>
+	</head>
+	<body>
+		<h1>{{.Title}}</h1>
+		<p>
+		<form action="/" method="POST">
+		<script type="text/javascript"
+			src="{{.Server}}/challenge?k={{.Public}}">
+		</script>
+		<noscript>
+			<iframe src="{{.Server}}/noscript?k={{.Public}}"
+				height="300" width="500" frameborder="0">
+			</iframe><br>
+			<textarea name="recaptcha_challenge_filed"
+				rows="3" cols="40">
+			</textarea>
+			<input type="hidden" name="recaptcha_response_field"
+				value="manual_challenge">
+		</noscript>
+		<input type="submit">
+		</form>
+		</p>
+		{{with .Ok}}
+		<p id="ok">Ok: {{.}}</p>
+		{{end}}
+		{{with .Error}}
+		<p id="error">Error: {{.}}</p>
+		{{end}}
+	</body>
+</html>
