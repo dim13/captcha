@@ -22,7 +22,7 @@ var errorcodes = map[string]string{
 	"recaptcha-not-reachable":  "reCAPTCHA never returns this error code.",
 }
 
-const apiServer = "http://www.google.com/recaptcha/api"
+const apiServer = "https://www.google.com/recaptcha/api"
 
 func New(private, public string) *Captcha {
 	return &Captcha{private: private, Public: public, Server: apiServer}
