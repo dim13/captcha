@@ -25,11 +25,7 @@ var errorcodes = map[string]string{
 const apiServer = "http://www.google.com/recaptcha/api"
 
 func New(private, public string) *Captcha {
-	c := new(Captcha)
-	c.private = private
-	c.Public = public
-	c.Server = apiServer
-	return c
+	return &Captcha{private: private, Public: public, Server: apiServer}
 }
 
 func (c *Captcha) Verify(remoteip, challenge, response string) (bool, error) {

@@ -9,8 +9,8 @@ import (
 )
 
 var (
-	private = flag.String("private", "", "private key")
-	public  = flag.String("public", "", "public key")
+	private = flag.String("private", "none", "private key")
+	public  = flag.String("public", "none", "public key")
 	listen = flag.String("listen", ":8000", "listen on")
 )
 
