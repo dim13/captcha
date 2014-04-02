@@ -26,7 +26,7 @@ var cc *captcha.Captcha
 
 func root(w http.ResponseWriter, r *http.Request) {
 	p := &Page{
-		Title:  "ReCaptcha test",
+		Title:  "reCAPTCHA test",
 		Server: cc.Server,
 		Public: cc.Public,
 	}
