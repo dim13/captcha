@@ -4,6 +4,7 @@
 package captcha
 
 import (
+	"errors"
 	"io/ioutil"
 	"net/http"
 	"net/url"
@@ -14,16 +15,15 @@ type Captcha struct {
 	private string
 	Public  string
 	Server  string
-	answer  []string
 }
 
 const apiServer = "https://www.google.com/recaptcha/api"
 
-func New(private, public string) *Captcha {
-	return &Captcha{private: private, Public: public, Server: apiServer}
+func New(private, public string) Captcha {
+	return Captcha{private: private, Public: public, Server: apiServer}
 }
 
-func (c *Captcha) Verify(remoteip, challenge, response string) (bool, error) {
+func (c Captcha) Verify(remoteip, challenge, response string) (bool, error) {
 	values := url.Values{
 		"privatekey": {c.private},
 		"remoteip":   {remoteip},
@@ -39,8 +39,8 @@ func (c *Captcha) Verify(remoteip, challenge, response string) (bool, error) {
 	if err != nil {
 		return false, err
 	}
-	c.answer = strings.Split(string(body), "\n")
-	return c.answer[0] == "true", c
+	answer := strings.Split(string(body), "\n")
+	return answer[0] == "true", errors.New(answer[1])
 }
 
 // Error codes:
@@ -49,7 +49,3 @@ func (c *Captcha) Verify(remoteip, challenge, response string) (bool, error) {
 // incorrect-captcha-sol:    The CAPTCHA solution was incorrect.
 // captcha-timeout:          The solution was received after the CAPTCHA timed out.
 // recaptcha-not-reachable:  reCAPTCHA never returns this error code.
-
-func (c *Captcha) Error() string {
-	return c.answer[1]
-}

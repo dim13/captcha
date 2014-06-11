@@ -22,7 +22,7 @@ type Page struct {
 	Error  string
 }
 
-var cc *captcha.Captcha
+var cc captcha.Captcha
 
 func root(w http.ResponseWriter, r *http.Request) {
 	p := &Page{
