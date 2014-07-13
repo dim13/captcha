@@ -9,9 +9,9 @@ import (
 )
 
 var (
-	private = flag.String("private", "none", "private key")
-	public  = flag.String("public", "none", "public key")
-	listen = flag.String("listen", ":8000", "listen on")
+	private string
+	public  string
+	listen  string
 )
 
 type Page struct {
@@ -20,6 +20,13 @@ type Page struct {
 	Public string
 	Ok     string
 	Error  string
+}
+
+func init() {
+	flag.StringVar(&private, "private", "none", "private key")
+	flag.StringVar(&public, "public", "none", "public key")
+	flag.StringVar(&listen, "listen", ":8000", "listen on")
+	flag.Parse()
 }
 
 var cc captcha.Captcha
@@ -46,13 +53,12 @@ func root(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
-	flag.Parse()
-	if *private == "" || *public == "" {
+	if private == "none" || public == "none" {
 		flag.PrintDefaults()
 		return
 	}
-	cc = captcha.New(*private, *public)
+	cc = captcha.New(private, public)
 	http.HandleFunc("/", root)
-	log.Println("Listen on", *listen)
-	log.Fatal(http.ListenAndServe(*listen, nil))
+	log.Println("Listen on", listen)
+	log.Fatal(http.ListenAndServe(listen, nil))
 }
