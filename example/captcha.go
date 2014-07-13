@@ -31,7 +31,7 @@ func init() {
 
 var cc captcha.Captcha
 
-func root(w http.ResponseWriter, r *http.Request) {
+func rootHandler(w http.ResponseWriter, r *http.Request) {
 	p := &Page{
 		Title:  "reCAPTCHA test",
 		Server: cc.Server,
@@ -58,7 +58,7 @@ func main() {
 		return
 	}
 	cc = captcha.New(private, public)
-	http.HandleFunc("/", root)
+	http.HandleFunc("/", rootHandler)
 	log.Println("Listen on", listen)
 	log.Fatal(http.ListenAndServe(listen, nil))
 }
