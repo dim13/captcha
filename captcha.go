@@ -56,5 +56,8 @@ func (c Captcha) Verify(remoteip, challenge, response string) (bool, error) {
 		return false, err
 	}
 	answer := strings.Split(string(body), "\n")
+	if len(answer) != 2 {
+		return false, ErrNotReachable
+	}
 	return answer[0] == "true", errMap[answer[1]]
 }
