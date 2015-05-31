@@ -40,10 +40,18 @@ func New(private, public string) Captcha {
 	return Captcha{private: private, Public: public, Server: apiServer}
 }
 
+func remoteip(r *http.Request) string {
+	ra := r.RemoteAddr
+	if i := strings.LastIndex(ra, ":"); i > 0 {
+		ra = ra[:i]
+	}
+	return ra
+}
+
 func (c Captcha) Verify(r *http.Request) (bool, error) {
 	values := url.Values{
 		"privatekey": {c.private},
-		"remoteip":   {r.RemoteAddr},
+		"remoteip":   {remoteip(r)},
 		"challenge":  {r.PostFormValue("recaptcha_challenge_field")},
 		"response":   {r.PostFormValue("recaptcha_response_field")},
 	}
