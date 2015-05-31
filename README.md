@@ -20,3 +20,10 @@ Example
 -------
 
 See [example](https://github.com/dim13/captcha/example/)
+
+
+reCAPTCHA 2.0
+-------------
+
+Consider usage [haisum's version](https://github.com/haisum/recaptcha)
+for 2.0 API
