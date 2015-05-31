@@ -1,3 +1,4 @@
+{{define "root"}}
 <!DOCTYPE html>
 <html>
 	<head>
@@ -9,23 +10,28 @@
 	</head>
 	<body>
 		<h1>{{.Title}}</h1>
-		{{with .Ok}}<div id="ok">Ok: {{.}}</div>{{end}}
-		{{with .Error}}<div id="error">Error: {{.}}</div>{{end}}
-		<form action="/" method="POST">
-		<script type="text/javascript"
-			src="{{.Server}}/challenge?k={{.Public}}">
-		</script>
-		<noscript>
-			<iframe src="{{.Server}}/noscript?k={{.Public}}"
-				height="300" width="500" frameborder="0">
-			</iframe><br>
-			<textarea name="recaptcha_challenge_filed"
-				rows="3" cols="40">
-			</textarea>
-			<input type="hidden" name="recaptcha_response_field"
-				value="manual_challenge">
-		</noscript>
-		<input type="submit">
-		</form>
+		{{with .Ok}}<div id="ok">{{.}}</div>{{end}}
+		{{with .Error}}<div id="error">{{.}}</div>{{end}}
+		{{template "recaptcha" .}}
 	</body>
 </html>
+{{end}}
+
+{{define "recaptcha"}}
+	<form action="/" method="POST">
+	<script type="text/javascript"
+		src="{{.Server}}/challenge?k={{.Public}}">
+	</script>
+	<noscript>
+		<iframe src="{{.Server}}/noscript?k={{.Public}}"
+			height="300" width="500" frameborder="0">
+		</iframe><br>
+		<textarea name="recaptcha_challenge_filed"
+			rows="3" cols="40">
+		</textarea>
+		<input type="hidden" name="recaptcha_response_field"
+			value="manual_challenge">
+	</noscript>
+	<input type="submit">
+	</form>
+{{end}}

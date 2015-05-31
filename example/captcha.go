@@ -33,23 +33,19 @@ var cc captcha.Captcha
 
 func rootHandler(w http.ResponseWriter, r *http.Request) {
 	p := &Page{
-		Title:  "reCAPTCHA test",
+		Title:  "reCAPTCHA 1.0",
 		Server: cc.Server,
 		Public: cc.Public,
 	}
 
-	challenge := r.PostFormValue("recaptcha_challenge_field")
-	response := r.PostFormValue("recaptcha_response_field")
-	if challenge != "" && response != "" {
-		if ok, err := cc.Verify(r.RemoteAddr, challenge, response); ok {
-			p.Ok = "valid"
-		} else {
-			p.Error = err.Error()
-		}
+	if ok, err := cc.Verify(r); ok {
+		p.Ok = "Valid"
+	} else {
+		p.Error = err.Error()
 	}
 
 	t := template.Must(template.ParseFiles("captcha.tmpl"))
-	t.Execute(w, p)
+	t.ExecuteTemplate(w, "root", p)
 }
 
 func main() {

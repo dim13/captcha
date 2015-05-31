@@ -1,11 +1,14 @@
 package captcha
 
-import "testing"
+import (
+	"net/http"
+	"testing"
+)
 
 func TestVerify(t *testing.T) {
-	c := New("secret", "test")
-	// shall fail with invalid-site-private-key
-	ok, err := c.Verify("localhost", "test", "test")
+	c := New("", "")
+	// shall fail with invalid-site-private-key error
+	ok, err := c.Verify(&http.Request{})
 	if ok || err != ErrInvalidPrivateKey {
 		t.Error(err.Error())
 	}
