@@ -1,6 +1,4 @@
-// reCAPTCHA 1.0 Go API
-//
-// https://developers.google.com/recaptcha/old/intro
+// Package captcha implements reCAPTCHA 1.0 API
 package captcha
 
 import (
@@ -11,6 +9,7 @@ import (
 	"strings"
 )
 
+// Captcha provides public key and server URL
 type Captcha struct {
 	private string
 	Public  string
@@ -19,6 +18,7 @@ type Captcha struct {
 
 const apiServer = "https://www.google.com/recaptcha/api"
 
+// Error codes
 var (
 	ErrInvalidPrivateKey = errors.New("We weren't able to verify the private key")
 	ErrInvalidChallenge  = errors.New("The challenge parameter of the verify script was incorrect")
@@ -36,6 +36,7 @@ var errMap = map[string]error{
 	"recaptcha-not-reachable":  ErrNotReachable,
 }
 
+// New allocates a new captcha
 func New(private, public string) Captcha {
 	return Captcha{private: private, Public: public, Server: apiServer}
 }
@@ -48,6 +49,7 @@ func remoteip(r *http.Request) string {
 	return ra
 }
 
+// Verify captcha, returns true on sussecc and error if any
 func (c Captcha) Verify(r *http.Request) (bool, error) {
 	values := url.Values{
 		"privatekey": {c.private},
