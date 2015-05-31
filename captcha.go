@@ -68,5 +68,9 @@ func (c Captcha) Verify(r *http.Request) (bool, error) {
 	if len(answer) != 2 {
 		return false, ErrNotReachable
 	}
-	return answer[0] == "true", errMap[answer[1]]
+	err, ok := errMap[answer[1]]
+	if !ok {
+		err = ErrNotReachable
+	}
+	return answer[0] == "true", err
 }
