@@ -2,10 +2,11 @@ package main
 
 import (
 	"flag"
-	"github.com/dim13/captcha"
 	"html/template"
 	"log"
 	"net/http"
+
+	"github.com/dim13/captcha"
 )
 
 var (
