@@ -4,6 +4,7 @@ package captcha
 import (
 	"errors"
 	"io/ioutil"
+	"net"
 	"net/http"
 	"net/url"
 	"strings"
@@ -41,23 +42,18 @@ func New(private, public string) Captcha {
 	return Captcha{private: private, Public: public, Server: apiServer}
 }
 
-func remoteip(r *http.Request) string {
-	ra := r.RemoteAddr
-	if i := strings.LastIndex(ra, ":"); i > 0 {
-		ra = ra[:i]
-	}
-	return ra
-}
-
 // Verify captcha, returns true on sussecc and error if any
 func (c Captcha) Verify(r *http.Request) (bool, error) {
-	values := url.Values{
+	host, _, err := net.SplitHostPort(r.RemoteAddr)
+	if err != nil {
+		return false, err
+	}
+	resp, err := http.PostForm(c.Server+"/verify", url.Values{
 		"privatekey": {c.private},
-		"remoteip":   {remoteip(r)},
+		"remoteip":   {host},
 		"challenge":  {r.PostFormValue("recaptcha_challenge_field")},
 		"response":   {r.PostFormValue("recaptcha_response_field")},
-	}
-	resp, err := http.PostForm(c.Server+"/verify", values)
+	})
 	if err != nil {
 		return false, err
 	}

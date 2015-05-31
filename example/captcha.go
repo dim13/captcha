@@ -39,10 +39,12 @@ func rootHandler(w http.ResponseWriter, r *http.Request) {
 		Public: cc.Public,
 	}
 
-	if ok, err := cc.Verify(r); ok {
-		p.Ok = "Valid"
-	} else {
-		p.Error = err.Error()
+	if r.Method == "POST" {
+		if ok, err := cc.Verify(r); ok {
+			p.Ok = "Valid"
+		} else {
+			p.Error = err.Error()
+		}
 	}
 
 	t := template.Must(template.ParseFiles("captcha.tmpl"))
