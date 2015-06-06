@@ -10,9 +10,10 @@ import (
 )
 
 var (
-	private string
-	public  string
-	listen  string
+	tmpl    = template.Must(template.ParseFiles("captcha.tmpl"))
+	private = flag.String("private", "none", "private key")
+	public  = flag.String("public", "none", "public key")
+	listen  = flag.String("listen", ":8000", "listen on")
 )
 
 type Page struct {
@@ -23,41 +24,30 @@ type Page struct {
 	Error  string
 }
 
-func init() {
-	flag.StringVar(&private, "private", "none", "private key")
-	flag.StringVar(&public, "public", "none", "public key")
-	flag.StringVar(&listen, "listen", ":8000", "listen on")
-	flag.Parse()
-}
-
-var cc captcha.Captcha
-
 func rootHandler(w http.ResponseWriter, r *http.Request) {
+	c := captcha.New(*private, *public)
 	p := &Page{
 		Title:  "reCAPTCHA 1.0",
-		Server: cc.Server,
-		Public: cc.Public,
+		Server: c.Server,
+		Public: c.Public,
 	}
-
 	if r.Method == "POST" {
-		if ok, err := cc.Verify(r); ok {
+		if ok, err := c.Verify(r); ok {
 			p.Ok = "Valid"
 		} else {
 			p.Error = err.Error()
 		}
 	}
-
-	t := template.Must(template.ParseFiles("captcha.tmpl"))
-	t.ExecuteTemplate(w, "root", p)
+	tmpl.ExecuteTemplate(w, "root", p)
 }
 
 func main() {
-	if private == "none" || public == "none" {
+	flag.Parse()
+	if *private == "none" || *public == "none" {
 		flag.PrintDefaults()
 		return
 	}
-	cc = captcha.New(private, public)
 	http.HandleFunc("/", rootHandler)
-	log.Println("Listen on", listen)
-	log.Fatal(http.ListenAndServe(listen, nil))
+	log.Println("Listen on", *listen)
+	log.Fatal(http.ListenAndServe(*listen, nil))
 }
