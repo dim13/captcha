@@ -11,31 +11,25 @@ import (
 
 var (
 	tmpl    = template.Must(template.ParseFiles("captcha.tmpl"))
-	private = flag.String("private", "none", "private key")
-	public  = flag.String("public", "none", "public key")
+	private = flag.String("private", "", "private key")
+	public  = flag.String("public", "", "public key")
 	listen  = flag.String("listen", ":8000", "listen on")
 )
 
 type Page struct {
-	Title  string
-	Server string
-	Public string
-	Ok     string
-	Error  string
+	captcha.Captcha
+	Result string
 }
 
 func rootHandler(w http.ResponseWriter, r *http.Request) {
-	c := captcha.New(*private, *public)
-	p := &Page{
-		Title:  "reCAPTCHA 1.0",
-		Server: c.Server,
-		Public: c.Public,
+	p := Page{
+		Captcha: captcha.New(*private, *public),
 	}
 	if r.Method == "POST" {
-		if ok, err := c.Verify(r); ok {
-			p.Ok = "Valid"
+		if ok, err := p.Captcha.Verify(r); ok {
+			p.Result = "Ok"
 		} else {
-			p.Error = err.Error()
+			p.Result = err.Error()
 		}
 	}
 	tmpl.ExecuteTemplate(w, "root", p)
@@ -43,7 +37,7 @@ func rootHandler(w http.ResponseWriter, r *http.Request) {
 
 func main() {
 	flag.Parse()
-	if *private == "none" || *public == "none" {
+	if *private == "" || *public == "" {
 		flag.PrintDefaults()
 		return
 	}

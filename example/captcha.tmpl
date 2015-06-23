@@ -1,18 +1,15 @@
+{{define "title"}}reCAPTCHA 1.0{{end}}
+
 {{define "root"}}
 <!DOCTYPE html>
 <html>
 	<head>
-		<title>{{.Title}}</title>
-		<style>
-			#ok { color: green; }
-			#error { color: red; }
-		</style>
+		<title>{{template "title"}}</title>
 	</head>
 	<body>
-		<h1>{{.Title}}</h1>
-		{{with .Ok}}<div id="ok">{{.}}</div>{{end}}
-		{{with .Error}}<div id="error">{{.}}</div>{{end}}
+		<h1>{{template "title"}}</h1>
 		{{template "recaptcha" .}}
+		{{with .Result}}<p>Result: {{.}}</p>{{end}}
 	</body>
 </html>
 {{end}}
